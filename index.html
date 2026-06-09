@@ -195,6 +195,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Nu
             <rect id="eCollar" x="2" y="8" width="76" height="8" rx="4" fill="#00B4D8" opacity="0"/>
             <rect id="eIPBg" x="6" y="10" width="54" height="12" rx="4" fill="#4361EE" opacity="0"/>
             <text id="eIPTxt" x="33" y="19.5" font-size="6" fill="white" text-anchor="middle" opacity="0" font-family="monospace" font-weight="700">192.168.1.5</text>
+            <!-- L2 MAC stamp (replaces IP visual) -->
+            <rect id="eMACBg" x="4" y="10" width="64" height="14" rx="4" fill="#2EC4B6" opacity="0"/>
+            <text id="eMACTxt" x="36" y="20" font-size="5.5" fill="white" text-anchor="middle" opacity="0" font-family="monospace" font-weight="700">AA:BB:CC:11:22:33</text>
+            <!-- L1 bits overlay -->
+            <rect id="eBitsBg" x="2" y="8" width="76" height="48" rx="7" fill="#0a0010" opacity="0"/>
+            <text id="eBitsTxt1" x="40" y="30" font-size="7" fill="#FF006E" text-anchor="middle" opacity="0" font-family="monospace" font-weight="700">01001000 01100101</text>
+            <text id="eBitsTxt2" x="40" y="41" font-size="7" fill="#FF79C6" text-anchor="middle" opacity="0" font-family="monospace" font-weight="700">01101100 01101111</text>
             <rect id="eFrame" x="1" y="7" width="78" height="50" rx="8" fill="none" stroke="#2EC4B6" stroke-width="3" opacity="0" stroke-dasharray="5,3"/>
           </svg>
 
@@ -311,8 +318,8 @@ const LAYERS = [
     outfit:'frame',
     envFill:'#001a1a', envFlap:'#000d0d', envGlow:'#2EC4B6', anim:'l2' },
   { n:1, name:'PHYSICAL', color:'#FF006E', dark:'#aa0044', bg:'sb1', mouthUp:true,
-    bubbles:["I AM BITS NOW! ⚡","0s and 1s...\nflying through air!"],
-    info:"Everything becomes binary bits — 0s and 1s. Over WiFi those bits travel as radio waves. Over 4G as electromagnetic signals. On fiber as pulses of light. The message is flying!",
+    bubbles:["I AM BITS NOW! ⚡","0's and 1's...\nflying through air!"],
+    info:"Everything becomes binary bits — 0's and 1's. Over WiFi those bits travel as radio waves. Over 4G as electromagnetic signals. On fiber as pulses of light. The message is flying!",
     pdu:'BITS', pduColor:'#FF006E',
     outfit:'bits',
     envFill:'#1a0010', envFlap:'#0d0008', envGlow:'#FF006E', anim:'l1' }
@@ -357,7 +364,26 @@ for(let i=0;i<50;i++) pts.push({x:Math.random()*innerWidth,y:Math.random()*inner
 /* ════════════════════════════════
    OUTFIT
 ════════════════════════════════ */
+function resetOutfit(){
+  gsap.set('#eLock',{attr:{opacity:0}});
+  gsap.set('#eCollar',{attr:{opacity:0}});
+  gsap.set('#eIPBg',{attr:{opacity:0}});
+  gsap.set('#eIPTxt',{attr:{opacity:0}});
+  gsap.set('#eFrame',{attr:{opacity:0}});
+  gsap.set('#eMACBg',{attr:{opacity:0}});
+  gsap.set('#eMACTxt',{attr:{opacity:0}});
+  gsap.set('#eBitsBg',{attr:{opacity:0}});
+  gsap.set('#eBitsTxt1',{attr:{opacity:0}});
+  gsap.set('#eBitsTxt2',{attr:{opacity:0}});
+  gsap.set('#eBody',{attr:{fill:'#FFD93D',stroke:'#222'}});
+  gsap.set('#eFlap',{attr:{fill:'#FFC300',stroke:'#222'}});
+  gsap.set('#eEyeL,#eEyeR',{attr:{fill:'white'}});
+  gsap.set('#ePupL,#ePupR',{attr:{fill:'#222'}});
+  gsap.set('#eBlL,#eBlR',{attr:{opacity:.5}});
+  gsap.set('#eMouth',{attr:{d:'M30 52 Q40 58 50 52'}});
+}
 function applyOutfit(L){
+  resetOutfit();
   gsap.to('#eBody',{duration:.5,attr:{fill:L.envFill,stroke:L.envGlow}});
   gsap.to('#eFlap',{duration:.5,attr:{fill:L.envFlap,stroke:L.envGlow}});
   gsap.to('#envSvg',{duration:.5,filter:'drop-shadow(0 0 14px '+L.envGlow+')'});
@@ -366,8 +392,8 @@ function applyOutfit(L){
   if(L.outfit==='lock'){ gsap.to('#eLock',{duration:.4,delay:.2,attr:{opacity:1}}); gsap.to('#eBlL,#eBlR',{duration:.3,attr:{opacity:0}}); }
   if(L.outfit==='collar'){ gsap.to('#eCollar',{duration:.4,delay:.2,attr:{opacity:.75}}); }
   if(L.outfit==='ip'){ gsap.to('#eIPBg',{duration:.4,delay:.2,attr:{opacity:.9}}); gsap.to('#eIPTxt',{duration:.4,delay:.35,attr:{opacity:1}}); }
-  if(L.outfit==='frame'){ gsap.to('#eFrame',{duration:.5,delay:.2,attr:{opacity:1}}); }
-  if(L.outfit==='bits'){ gsap.to('#eBody',{duration:.3,attr:{fill:'#0a0010'}});gsap.to('#eFlap',{duration:.3,attr:{fill:'#050008'}});gsap.to('#eEyeL,#eEyeR',{duration:.3,delay:.2,attr:{fill:'#FF006E'}});gsap.to('#ePupL,#ePupR',{duration:.3,delay:.2,attr:{fill:'white'}}); }
+  if(L.outfit==='frame'){ gsap.to('#eFrame',{duration:.5,delay:.2,attr:{opacity:1}}); gsap.to('#eMACBg',{duration:.4,delay:.3,attr:{opacity:.9}}); gsap.to('#eMACTxt',{duration:.4,delay:.45,attr:{opacity:1}}); }
+  if(L.outfit==='bits'){ gsap.to('#eBody',{duration:.3,attr:{fill:'#0a0010'}});gsap.to('#eFlap',{duration:.3,attr:{fill:'#050008'}});gsap.to('#eBitsBg',{duration:.3,delay:.1,attr:{opacity:1}});gsap.to('#eBitsTxt1',{duration:.4,delay:.3,attr:{opacity:1}});gsap.to('#eBitsTxt2',{duration:.4,delay:.5,attr:{opacity:1}});gsap.to('#eEyeL,#eEyeR',{duration:.3,delay:.4,attr:{fill:'#FF006E'}});gsap.to('#ePupL,#ePupR',{duration:.3,delay:.4,attr:{fill:'white'}}); }
 }
 
 
@@ -761,16 +787,7 @@ function showEnd(){
 function restart(){
   document.getElementById('end').classList.remove('active');
   // reset SVG outfit
-  gsap.set('#eLock',{attr:{opacity:0}});
-  gsap.set('#eCollar',{attr:{opacity:0}});
-  gsap.set('#eIPBg',{attr:{opacity:0}});
-  gsap.set('#eIPTxt',{attr:{opacity:0}});
-  gsap.set('#eFrame',{attr:{opacity:0}});
-  gsap.set('#eBody',{attr:{fill:'#FFD93D',stroke:'#FFD93D'}});
-  gsap.set('#eFlap',{attr:{fill:'#FFC300',stroke:'#FFC300'}});
-  gsap.set('#eEyeL,#eEyeR',{attr:{fill:'white'}});
-  gsap.set('#ePupL,#ePupR',{attr:{fill:'#222'}});
-  gsap.set('#eBlL,#eBlR',{attr:{opacity:.5}});
+  resetOutfit();
   gsap.set('#eMouth',{attr:{d:'M30 52 Q40 58 50 52'}});
   gsap.set('#envSvg',{filter:'drop-shadow(0 0 14px #FFD93D)'});
   // reset tonyMsg for next play
